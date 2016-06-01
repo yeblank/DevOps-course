@@ -21,3 +21,7 @@
     unarchive: src=~/apache-maven-3.3.9-bin.tar.gz dest=/opt/maven
     become: yes
     become_method: sudo
+    
+    - name: set env m2_home
+    lineinfile: dest=/home/ec2-user/.bash_profile regexp="^M2_HOME.*" line="M2_HOME=/opt/maven/apache-maven-3.3.9" insertbefore="^PATH="
+
