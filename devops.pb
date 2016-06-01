@@ -7,7 +7,7 @@
     become: yes
     become_method: sudo
   - name: clone my project
-    git: repo=https://github.com/yeblank/spring-petclinic.git dest=~/sp
+    git: repo=https://github.com/yeblank/spring-petclinic.git dest=~/sp update=no
   - name: clone project devops scripts 
     git: repo=https://github.com/yeblank/DevOps-course.git dest=~/scripts update=no
   - name: get maven
