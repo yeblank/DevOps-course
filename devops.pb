@@ -13,9 +13,11 @@
   - name: get maven
     get_url: url=http://apache.spd.co.il/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz dest=~
 
-
-
-
-
-
-
+  - name: make maven dir
+    file: path=/opt/maven state=directory mode=0755
+    become: yes
+    become_method: sudo
+  - name: unzip
+    unarchive: src=~/apache-maven-3.3.9-bin.tar.gz dest=/opt/maven
+    become: yes
+    become_method: sudo
