@@ -1,20 +1,30 @@
 ---
 - hosts: localhost
+  remote_user: root
   tasks:
-  - name: install git
-    yum: name=git state=latest
+  - name: ensure apache is at the latest version
+    yum: name=git
     become: yes
     become_method: sudo
-  - name: clone petclinic
-    git: repo=https://github.com/yeblank/spring-petclinic.git dest=~/spring-petclinic
-  - name: clone course
-    git: repo=https://github.com/yeblank/DevOps-course.git dest=~/course update=no
-  - name: create tmp dir
-    file: path=~/tmp state=directory
-  - name: download and extract maven
-    unarchive: src=http://apache.mivzakim.net/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz dest=~/tmp copy=no mode=755
+  - name: clone my project
+    git: repo=https://github.com/yeblank/spring-petclinic.git dest=~/sp update=no
+  - name: clone project devops scripts 
+    git: repo=https://github.com/yeblank/DevOps-course.git dest=~/scripts update=no
+  - name: get maven
+    get_url: url=http://apache.spd.co.il/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz dest=~
+
+  - name: make maven dir
+    file: path=/opt/maven state=directory mode=0755
+    become: yes
+    become_method: sudo
+  - name: unzip
+    unarchive: src=~/apache-maven-3.3.9-bin.tar.gz dest=/opt/maven
+    become: yes
+    become_method: sudo
+    
   - name: set env m2_home
-    lineinfile: dest=/home/ec2-user/.bash_profile regexp="^M2_HOME.*" line="M2_HOME=/home/ec2-user/tmp/apache-maven-3.3.9" insertbefore="^PATH="
+    lineinfile: dest=/home/ec2-user/.bash_profile regexp="^M2_HOME.*" line="M2_HOME=/opt/maven/apache-maven-3.3.9" insertbefore="^PATH="
+
   - name: export M2_HOME
     lineinfile: dest=/home/ec2-user/.bash_profile insertafter="^M2_HOME=" line="export M2_HOME"
   - name: set M2
@@ -23,11 +33,8 @@
     lineinfile: dest=/home/ec2-user/.bash_profile insertafter="^M2=" line="export M2"
   - name: Add M2 to PATH
     lineinfile: dest=/home/ec2-user/.bash_profile regexp="^PATH=.*:$M2" insertafter="^PATH=" line="PATH=$PATH:$M2"
-  - name: Ensure Jenkins Yum repo present
-    become: yes
-    become_method: sudo
-    get_url: url=http://pkg.jenkins-ci.org/redhat/jenkins.repo
-           dest=/etc/yum.repos.d/jenkins.repo mode=0644
+
+
   - name: Ensure Jenkins GPG key installed
     command: rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key
     become: yes
@@ -40,3 +47,4 @@
     service: name=jenkins state=running enabled=true
     become: yes
     become_method: sudo
+
