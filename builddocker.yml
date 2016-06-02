@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  tasks:
+  - name: install docker-py
+    pip: name=docker-py version=1.2.1
+    become: yes
+    become_method: sudo
+  - name: Create docker image
+    docker_image: 
+       path: /home/ec2-user/mydock 
+       name: petclinic1
+    become: yes
+    become_method: sudo
