@@ -5,10 +5,6 @@
     yum: name=git state=latest
     become: yes
     become_method: sudo
-  - name: install docker-py
-    yum: name=docker-py state=latest
-    become: yes
-    become_method: sudo
   - name: clone petclinic
     git: repo=https://github.com/yeblank/spring-petclinic.git dest=~/spring-petclinic
   - name: clone course
