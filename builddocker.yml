@@ -1,13 +1,19 @@
 ---
 - hosts: localhost
+vars:
+    springversion: 0.0.1
   tasks:
   - name: install docker-py
     pip: name=docker-py version=1.2.1
     become: yes
     become_method: sudo
-  - name: Create docker image
-    docker_image: 
-       path: /home/ec2-user/mydock 
-       name: petclinic1
+  - name: create docker  dir
+    file: path=/home/ec2-user/docker state=directory
+- name: create Docker file from template
+    template: src="/home/ec2-user/course/Dockerfile.j2" dest="/home/ec2-user/mydock/Dockerfile"
+  - name: create Docker image
+    docker_image: path="/home/ec2-user/mydock" name="petclin" state="present" tag="ll"
     become: yes
     become_method: sudo
+
+  
